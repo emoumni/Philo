@@ -8,28 +8,52 @@
 #include <limits.h>
 #include <signal.h>
 
-typedef struct {
-    int id;
-    int num_of_times_ate;
-    int time_to_die;
-    int left_fork;
-    int right_fork;
-    pthread_mutex_t *forks;
-} philosopher;
+typedef struct s_actions {
+    char *name;
+} t_actions;
 
-typedef struct {
-    int num_philo;
-} maindata;
+typedef struct s_main;
 
+typedef struct s_philo {
+    size_t position;
+    size_t left_fork;
+    size_t right_fork;
+    size_t meals;
+    size_t eating;
+    size_t last_meal;
+    size_t threshold;
+    struct s_main *instance;
+} t_philo;
+
+typedef struct s_main {
+    size_t amount;
+    size_t time_toeat;
+    size_t time_todie;
+    size_t time_tosleep;
+    size_t repas;
+    size_t finish;
+    t_philo *philosophers;
+    int *forks;
+    pthread_mutex_t write_mutex;
+    pthread_mutex_t *frks_mutexes;
+    pthread_mutex_t die_mutex;
+} t_main;
+
+t_actions actions[] = {
+    {"TAKING_FORK"},
+    {"EATING"},
+    {"SLEEPING"},
+    {"THINKING"},
+    {"DIED"},
+    {"OVER"}
+};
 
 //parsing
 
 
 
 //initialize
-void initialize_philo(philosopher *philo, int id, int left, int right);
-int create_philos(maindata *main_data, philosopher **philos);
-int create_forks(maindata *main_data, philosopher *philosopher_data);
+
 
 
 //creat threads
