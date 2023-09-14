@@ -1,54 +1,55 @@
 #include "philo.h"
 
-int create_forks(maindata *main_data, philosopher *philosopher_data)
+int create_forks(t_table *main_data)
 {
     int i;
-    pthread_mutex_t *forks;
+    pthread_mutex_t *fork;
 
     i = 0;
-    forks = malloc(sizeof(pthread_mutex_t) * main_data->num_philo);
-    if (forks == NULL)
+    fork = malloc(sizeof(pthread_mutex_t) * main_data->nb_philo);
+    if (fork == NULL)
         return (0);    
-    while (i < main_data->num_philo)
+    while (i < main_data->nb_philo)
     {
-        if (pthread_mutex_init(&forks[i], NULL) != 0)
+        if (pthread_mutex_init(&fork[i], NULL) != 0)
         {
             while (i > 0)
             {
                 i--;
-                pthread_mutex_destroy(&forks[i]);
+                pthread_mutex_destroy(&fork[i]);
             }
-            free(forks);
+            free(fork);
             return (0);
         }
         i++;
     }
-    philosopher_data->forks = forks;
+    main_data->mtx->forks = fork;
     return (1);
 }
 
-void destroy_forks(philosopher *philosopher_data) {
-    int i;
-    maindata main_data;
-
-    i = 0;
-    while (i < main_data.num_philo)
-    {
-        pthread_mutex_destroy(&philosopher_data->forks[i]);
-        i++;
-    }
-    free(philosopher_data->forks);
-}
-
-void unlock_forks(philosopher *philosopher_data)
+void destroy_forks(t_table *philosopher_data)     
 {
     int i;
-    maindata main_data;
+    t_philo main_data;
 
     i = 0;
-    while (i < main_data.num_philo)
+    while (i < main_data.id)
     {
-        pthread_mutex_unlock(&philosopher_data->forks[i]);
+        pthread_mutex_destroy(&philosopher_data->mtx->forks[i]);
+        i++;
+    }
+    free(philosopher_data->mtx->forks);
+}
+
+void unlock_forks(t_table *philosopher_data)
+{
+    int i;
+    t_philo main_data;
+
+    i = 0;
+    while (i < main_data.id)
+    {
+        pthread_mutex_unlock(&philosopher_data->mtx->forks[i]);
         i++;
     }
 }

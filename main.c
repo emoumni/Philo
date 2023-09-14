@@ -1,18 +1,16 @@
 #include "philo.h"
 
-int main(int argc, char **argv)
+int	main(int ac, char **av)
 {
-    t_main main;
-    t_philo **philos;
+	t_table	*data;
 
-    if (create_philos(&main, &philos) == 0)
-	{
-        printf("Error concerning creating philosophers\n");
-        return (1);
+	if (input_parsing(ac, av))
+		return (1);
+    data = create_empty_struct();
+    if (set_struct_fields(data, ac, av) || init_mutex(data->mtx))
+    {
+        cleanup_mutex(data->mtx);
+        return (0);
     }
-    if (create_forks(&main, *philos) == 0) {
-        printf("Error  conserning creating forks\n");
-        return (1);
-    }
-    return (0);
+	return (0);
 }
